@@ -70,10 +70,10 @@ This eliminates repetitive manual deployment steps and demonstrates the fundamen
            └────┬───┘   └────┬─────┘   └────┬─────┘
                 │            │              │
                 ▼            ▼              │
-          ┌──────────┐  ┌─────────────┐    │
-          │  WAR     │  │ Docker Hub  │    │
-          │  File    │  │   Registry  │    │
-          └──────────┘  └──────┬──────┘    │
+          ┌──────────┐  ┌─────────────┐     │
+          │  WAR     │  │ Docker Hub  │     │
+          │  File    │  │   Registry  │     │
+          └──────────┘  └──────┬──────┘     │
                                │            │
                                └──────┬─────┘
                                       ▼
@@ -847,20 +847,6 @@ I learned how to:
 - 🛠️ Real-world Troubleshooting
 - 📈 Scalable Kubernetes Deployment
 - 🚀 End-to-End DevOps Implementation
-
----
-
-# 👨‍💻 Author
-
-**Safwan S**
-
-B.Tech Information Technology
-
-Interested in:
-
-```text
-DevOps | Cloud | Kubernetes | AWS | CI/CD | DevSecOps
-```
 
 ---
 
