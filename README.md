@@ -60,20 +60,20 @@ GitHub → Jenkins → Maven → Docker → Docker Hub → Kubernetes → AWS EK
 
 ```mermaid
 flowchart TD
-    A[👨‍💻 Developer] -->|git push| B[🐙 GitHub Repository]
-    B -->|clone| C[🔨 Jenkins CI/CD Server]
-    C --> D[📦 Maven Build]
-    D --> E[🗂️ WAR Artifact]
-    C --> F[🐳 Docker Build]
-    F --> G[☁️ Docker Hub Registry]
-    C --> H[☸️ kubectl apply]
-    G --> I[🏗️ AWS EKS Cluster]
+    A["Developer"] -->|git push| B["GitHub Repository"]
+    B -->|clone| C["Jenkins CI/CD Server"]
+    C --> D["Maven Build"]
+    D --> E["WAR Artifact"]
+    C --> F["Docker Build"]
+    F --> G["Docker Hub Registry"]
+    C --> H["kubectl apply"]
+    G --> I["AWS EKS Cluster"]
     H --> I
-    I --> J[📦 Pod 1 — Tomcat]
-    I --> K[📦 Pod 2 — Tomcat]
-    J --> L[⚖️ AWS Load Balancer]
+    I --> J["Pod 1 - Tomcat"]
+    I --> K["Pod 2 - Tomcat"]
+    J --> L["AWS Load Balancer"]
     K --> L
-    L --> M[🌐 End User]
+    L --> M["End User"]
 
     style A fill:#4b5563,color:#fff
     style B fill:#24292e,color:#fff
