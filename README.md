@@ -1,492 +1,215 @@
+<div align="center">
+
 # 🚀 End-to-End DevOps CI/CD Pipeline
 
-### Java Web Application Deployment using Jenkins, Maven, Docker, Kubernetes & AWS EKS
+### Automated Java Web Application Delivery with Jenkins, Maven, Docker, Kubernetes & AWS EKS
 
-<p align="center">
-  <img src="https://img.shields.io/badge/CI%2FCD-Jenkins-red?style=for-the-badge&logo=jenkins" />
-  <img src="https://img.shields.io/badge/Build-Maven-orange?style=for-the-badge&logo=apachemaven" />
-  <img src="https://img.shields.io/badge/Container-Docker-blue?style=for-the-badge&logo=docker" />
-  <img src="https://img.shields.io/badge/Orchestration-Kubernetes-326CE5?style=for-the-badge&logo=kubernetes" />
-  <img src="https://img.shields.io/badge/Cloud-AWS%20EKS-FF9900?style=for-the-badge&logo=amazonaws" />
-  <img src="https://img.shields.io/badge/Status-Completed-success?style=for-the-badge" />
-</p>
+[![Jenkins](https://img.shields.io/badge/CI%2FCD-Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)](https://www.jenkins.io/)
+[![Maven](https://img.shields.io/badge/Build-Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
+[![Docker](https://img.shields.io/badge/Container-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Orchestration-Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
+[![AWS EKS](https://img.shields.io/badge/Cloud-AWS%20EKS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)](https://aws.amazon.com/eks/)
+[![Status](https://img.shields.io/badge/Status-Completed-2ea44f?style=for-the-badge)]()
+[![License](https://img.shields.io/badge/License-MIT-lightgrey?style=for-the-badge)]()
+
+**A production-style, fully automated CI/CD pipeline that takes a Java web application from a Git commit to a live, load-balanced deployment on AWS EKS — with zero manual intervention.**
+
+[Overview](#-project-overview) •
+[Architecture](#️-architecture) •
+[Tech Stack](#️-tech-stack) •
+[Pipeline](#-cicd-workflow) •
+[Setup](#-getting-started) •
+[Verification](#-verification--testing) •
+[Troubleshooting](#️-troubleshooting-log) •
+[Learnings](#-key-learning-outcomes)
+
+</div>
 
 ---
 
 ## 📌 Project Overview
 
-This project demonstrates a complete **End-to-End DevOps CI/CD pipeline** for a Java Web Application.
+This project implements a complete, real-world **CI/CD pipeline** for a Java web application — covering everything from source control to a running, internet-facing service on Kubernetes.
 
-The project automates the complete application delivery process starting from source code management to production-style deployment on a Kubernetes cluster running on AWS EKS.
+Every stage of the software delivery lifecycle is automated:
 
-The pipeline automatically performs:
-
-**GitHub → Jenkins → Maven → Docker → Docker Hub → Kubernetes → AWS EKS → LoadBalancer → Application**
-
----
-
-## 🎯 Project Objective
-
-The main objective of this project is to implement a practical DevOps workflow where application code can be:
-
-- Stored and managed using GitHub
-- Automatically built using Jenkins
-- Packaged using Maven
-- Containerized using Docker
-- Published to Docker Hub
-- Deployed into Kubernetes
-- Hosted on AWS EKS
-- Exposed to users through an AWS Load Balancer
-
-This eliminates repetitive manual deployment steps and demonstrates the fundamentals of CI/CD automation.
-
----
-
-# 🏗️ Architecture
-
-```text
-                         👨‍💻 Developer
-                              |
-                              |
-                              ▼
-                     ┌─────────────────┐
-                     │     GitHub      │
-                     │  Source Code    │
-                     └────────┬────────┘
-                              |
-                              | Git Clone
-                              ▼
-                     ┌─────────────────┐
-                     │     Jenkins     │
-                     │    CI / CD      │
-                     └────────┬────────┘
-                              |
-                ┌─────────────┼─────────────┐
-                │             │             │
-                ▼             ▼             ▼
-           ┌────────┐   ┌──────────┐   ┌──────────┐
-           │ Maven  │   │  Docker  │   │  Kubectl │
-           │ Build  │   │  Build   │   │  Deploy  │
-           └────┬───┘   └────┬─────┘   └────┬─────┘
-                │            │              │
-                ▼            ▼              │
-          ┌──────────┐  ┌─────────────┐     │
-          │  WAR     │  │ Docker Hub  │     │
-          │  File    │  │   Registry  │     │
-          └──────────┘  └──────┬──────┘     │
-                               │            │
-                               └──────┬─────┘
-                                      ▼
-                              ┌───────────────┐
-                              │    AWS EKS    │
-                              │  Kubernetes   │
-                              │    Cluster    │
-                              └───────┬───────┘
-                                      |
-                         ┌────────────┴────────────┐
-                         │                         │
-                         ▼                         ▼
-                   ┌────────────┐           ┌────────────┐
-                   │    Pod 1   │           │    Pod 2   │
-                   │   Tomcat   │           │   Tomcat   │
-                   │ Java Web   │           │ Java Web   │
-                   │ Application│           │ Application│
-                   └──────┬─────┘           └──────┬─────┘
-                          │                          │
-                          └────────────┬─────────────┘
-                                       ▼
-                              ┌─────────────────┐
-                              │ AWS LoadBalancer│
-                              └────────┬────────┘
-                                       |
-                                       ▼
-                              🌐 Web Application
+```
+GitHub → Jenkins → Maven → Docker → Docker Hub → Kubernetes → AWS EKS → Load Balancer → Live App
 ```
 
+**Why this matters:** manual deployment is slow, error-prone, and doesn't scale. This pipeline removes human intervention from the build-test-package-deploy cycle, so every code push can safely and consistently become a production deployment.
+
+### 🎯 Objectives
+
+| Goal | How it's achieved |
+|---|---|
+| Version-controlled source code | GitHub as the single source of truth |
+| Automated builds on every push | Jenkins pipeline triggers |
+| Reliable, repeatable packaging | Maven build lifecycle |
+| Environment-agnostic deployment | Docker containerization |
+| Centralized image distribution | Docker Hub registry |
+| Self-healing, scalable runtime | Kubernetes Deployments |
+| Managed, production-grade infrastructure | AWS EKS |
+| Secure external access | AWS Load Balancer |
+
 ---
 
-# 🔄 CI/CD Workflow
+## 🏗️ Architecture
 
-The complete pipeline follows these stages:
+<div align="center">
 
-```text
-1. Developer pushes code
-           ↓
-2. GitHub stores source code
-           ↓
-3. Jenkins clones repository
-           ↓
-4. Maven builds the application
-           ↓
-5. WAR file is generated
-           ↓
-6. Docker creates container image
-           ↓
-7. Image pushed to Docker Hub
-           ↓
-8. Jenkins deploys to Kubernetes
-           ↓
-9. Kubernetes creates application Pods
-           ↓
-10. AWS LoadBalancer exposes application
-           ↓
-11. User accesses application
+```mermaid
+flowchart TD
+    A[👨‍💻 Developer] -->|git push| B[🐙 GitHub Repository]
+    B -->|clone| C[🔨 Jenkins CI/CD Server]
+    C --> D[📦 Maven Build]
+    D --> E[🗂️ WAR Artifact]
+    C --> F[🐳 Docker Build]
+    F --> G[☁️ Docker Hub Registry]
+    C --> H[☸️ kubectl apply]
+    G --> I[🏗️ AWS EKS Cluster]
+    H --> I
+    I --> J[📦 Pod 1 — Tomcat]
+    I --> K[📦 Pod 2 — Tomcat]
+    J --> L[⚖️ AWS Load Balancer]
+    K --> L
+    L --> M[🌐 End User]
+
+    style A fill:#4b5563,color:#fff
+    style B fill:#24292e,color:#fff
+    style C fill:#d24939,color:#fff
+    style D fill:#c71a36,color:#fff
+    style F fill:#2496ed,color:#fff
+    style G fill:#2496ed,color:#fff
+    style I fill:#ff9900,color:#000
+    style L fill:#8250df,color:#fff
+    style M fill:#0969da,color:#fff
 ```
 
----
-
-# 🛠️ Technologies Used
-
-| Technology | Purpose |
-|------------|---------|
-| ☕ Java | Application development |
-| 📦 Maven | Build and package Java application |
-| 🐙 GitHub | Source Code Management |
-| 🔨 Jenkins | CI/CD automation |
-| 🐳 Docker | Application containerization |
-| 🐳 Docker Hub | Container image registry |
-| ☸️ Kubernetes | Container orchestration |
-| ☁️ AWS EKS | Managed Kubernetes service |
-| 🔐 AWS IAM | AWS authentication and permissions |
-| ⚖️ AWS Load Balancer | External application access |
-| 🐧 Ubuntu | Server operating system |
-| 🐱 Apache Tomcat | Java Web Application Server |
-| 💻 Linux | Server administration |
+</div>
 
 ---
 
-# 📂 Project Structure
+## 🔄 CI/CD Workflow
+
+| Stage | Action | Tool |
+|:---:|---|:---:|
+| 1 | Developer pushes code | Git |
+| 2 | Source code is stored | GitHub |
+| 3 | Repository is cloned | Jenkins |
+| 4 | Application is compiled & packaged | Maven |
+| 5 | WAR artifact is generated | Maven |
+| 6 | Container image is built | Docker |
+| 7 | Image is pushed to registry | Docker Hub |
+| 8 | Manifests are applied to cluster | kubectl |
+| 9 | Pods are scheduled & started | Kubernetes |
+| 10 | Service is exposed externally | AWS Load Balancer |
+| 11 | User accesses the live application | Browser |
+
+---
+
+## 🛠️ Tech Stack
+
+<div align="center">
+
+| Category | Technologies |
+|---|---|
+| **Language & Build** | ☕ Java · 📦 Maven |
+| **Source Control** | 🐙 GitHub |
+| **CI/CD** | 🔨 Jenkins |
+| **Containerization** | 🐳 Docker · 🐳 Docker Hub |
+| **Orchestration** | ☸️ Kubernetes |
+| **Cloud & Infra** | ☁️ AWS EKS · 🔐 AWS IAM · ⚖️ AWS Load Balancer |
+| **Runtime** | 🐱 Apache Tomcat |
+| **OS / Admin** | 🐧 Ubuntu Linux |
+
+</div>
+
+---
+
+## 📂 Project Structure
 
 ```text
 maven-web-app/
-│
 ├── src/
 │   └── main/
-│       └── webapp/
-│
+│       └── webapp/            # Application source
 ├── target/
-│   └── maven-web-app.war
-│
-├── Dockerfile
-├── k8s-deploy.yml
-├── pom.xml
-├── Jenkinsfile
+│   └── maven-web-app.war      # Build output
+├── Dockerfile                 # Container image definition
+├── k8s-deploy.yml             # Kubernetes manifests
+├── pom.xml                    # Maven project config
+├── Jenkinsfile                # CI/CD pipeline definition
 └── README.md
 ```
 
 ---
 
-# 1️⃣ GitHub
+## ⚙️ Component Deep Dive
 
-GitHub is used as the **Source Code Management (SCM)** platform.
+### 1️⃣ GitHub — Source Control
 
 Repository:
-
 ```text
 https://github.com/Saf1111/maven-web-app.git
 ```
+Jenkins pulls the latest source directly from this repository at the start of every pipeline run.
 
-Jenkins retrieves the application source code from this repository during the pipeline execution.
+### 2️⃣ Jenkins — CI/CD Orchestration
 
----
-
-# 2️⃣ Jenkins
-
-Jenkins is used as the **CI/CD automation server**.
-
-Jenkins performs the complete automated workflow:
+Jenkins drives the entire pipeline through five sequential stages:
 
 ```text
-Clone
-  ↓
-Build
-  ↓
-Dockerize
-  ↓
-Push
-  ↓
-Deploy
+Clone → Build → Dockerize → Push → Deploy
 ```
 
-### Jenkins Pipeline Stages
-
-```text
-┌──────────────────────────┐
-│       Clone Repo         │
-└────────────┬─────────────┘
-             ↓
-┌──────────────────────────┐
-│      Maven Build         │
-└────────────┬─────────────┘
-             ↓
-┌──────────────────────────┐
-│      Docker Build        │
-└────────────┬─────────────┘
-             ↓
-┌──────────────────────────┐
-│      Docker Push         │
-└────────────┬─────────────┘
-             ↓
-┌──────────────────────────┐
-│     Kubernetes Deploy    │
-└──────────────────────────┘
-```
-
----
-
-# 3️⃣ Maven Build
-
-Maven is responsible for compiling and packaging the Java application.
-
-Command:
+### 3️⃣ Maven — Build & Package
 
 ```bash
 mvn clean package
 ```
+Produces `target/maven-web-app.war`, the deployable artifact consumed by the Docker build stage.
 
-The build generates:
-
-```text
-target/maven-web-app.war
-```
-
-The WAR file is then used to create the Docker image.
-
----
-
-# 4️⃣ Docker
-
-Docker is used to containerize the Java web application.
-
-The Docker image contains:
-
-```text
-Docker Container
-│
-└── Apache Tomcat
-      │
-      └── maven-web-app.war
-```
-
-Docker image:
-
-```text
-safwan112/mavenwebapp:latest
-```
-
-Build command:
+### 4️⃣ Docker — Containerization
 
 ```bash
 docker build -t safwan112/mavenwebapp:latest .
 ```
+Packages the WAR file into a Tomcat-based image:
+```text
+Docker Image
+└── Apache Tomcat
+    └── maven-web-app.war
+```
 
----
-
-# 5️⃣ Docker Hub
-
-Docker Hub is used as the container image registry.
-
-The Jenkins pipeline authenticates with Docker Hub using Jenkins Credentials and pushes the generated image.
+### 5️⃣ Docker Hub — Image Registry
 
 ```bash
 docker push safwan112/mavenwebapp:latest
 ```
+Image path: `safwan112/mavenwebapp:latest`
 
-Image:
+### 6️⃣ Kubernetes — Orchestration
 
-```text
-Docker Hub
-└── safwan112
-      └── mavenwebapp
-            └── latest
-```
+| Setting | Value |
+|---|---|
+| Replicas | `2` |
+| Container Port | `8080` |
+| Service Type | `LoadBalancer` |
 
----
+### 7️⃣ AWS EKS — Managed Kubernetes
 
-# 6️⃣ Kubernetes
+The cluster runs across multiple worker nodes, each capable of scheduling application pods, giving the deployment high availability out of the box.
 
-Kubernetes is responsible for running and managing the application containers.
+### 8️⃣ AWS IAM — Secure Access
 
-The deployment uses:
-
-```text
-Replicas: 2
-Container Port: 8080
-Service Type: LoadBalancer
-```
-
-### Kubernetes Resources
-
-```text
-Kubernetes Cluster
-│
-├── Deployment
-│
-├── Pod 1
-│
-├── Pod 2
-│
-└── Service
-      │
-      └── LoadBalancer
-```
+EC2 nodes assume the `eksroleec2` IAM role, allowing them to interact with AWS services without hardcoded credentials.
 
 ---
 
-# 7️⃣ AWS EKS
+## 🔐 Secrets Management
 
-Amazon Elastic Kubernetes Service (EKS) is used to host the Kubernetes cluster.
-
-The cluster contains multiple worker nodes where the application Pods are scheduled.
-
-```text
-AWS
-│
-└── EKS Cluster
-      │
-      ├── Worker Node 1
-      │     └── Application Pod
-      │
-      └── Worker Node 2
-            └── Application Pod
-```
-
----
-
-# 8️⃣ AWS IAM
-
-AWS IAM is used to provide AWS permissions to the EC2 instances involved in the project.
-
-The EC2 instances use an IAM role to communicate with AWS services without manually configuring AWS access keys.
-
-Example role:
-
-```text
-eksroleec2
-```
-
----
-
-# 9️⃣ Kubernetes Deployment
-
-The Kubernetes deployment uses the Docker image:
-
-```yaml
-image: safwan112/mavenwebapp:latest
-```
-
-Container:
-
-```yaml
-name: mavenwebappcontainer
-```
-
-Container port:
-
-```yaml
-containerPort: 8080
-```
-
-Replicas:
-
-```yaml
-replicas: 2
-```
-
----
-
-# 🔟 Kubernetes Service
-
-The application is exposed using a Kubernetes `LoadBalancer` service.
-
-```text
-Service Type:
-
-LoadBalancer
-```
-
-Traffic flow:
-
-```text
-Internet
-    ↓
-AWS Load Balancer
-    ↓
-Kubernetes Service
-    ↓
-Application Pods
-    ↓
-Tomcat : 8080
-```
-
----
-
-# 🌐 Application Access
-
-The application is deployed through the AWS Load Balancer.
-
-Because the WAR file is named:
-
-```text
-maven-web-app.war
-```
-
-Tomcat deploys the application under:
-
-```text
-/maven-web-app/
-```
-
-Therefore the application is accessed using:
-
-```text
-http://<LOAD-BALANCER-DNS>/maven-web-app/
-```
-
----
-
-# 🐱 Why Apache Tomcat?
-
-The application is packaged as a Java Web Application WAR file.
-
-```text
-maven-web-app.war
-```
-
-Tomcat acts as the Java Web Application Server responsible for:
-
-- Deploying the WAR file
-- Running the Java web application
-- Handling HTTP requests
-- Listening on port 8080
-
-Application flow:
-
-```text
-WAR File
-   ↓
-Apache Tomcat
-   ↓
-Java Web Application
-   ↓
-HTTP : 8080
-```
-
----
-
-# 🔐 Jenkins Docker Hub Credentials
-
-Docker Hub authentication is handled securely through Jenkins Credentials.
-
-Credential ID:
-
-```text
-dockerhub
-```
-
-The Docker Hub access token is stored inside Jenkins and is not hardcoded into the pipeline.
-
-The pipeline uses:
+Docker Hub credentials are never hardcoded. Jenkins injects them at runtime via the Credentials store:
 
 ```groovy
 withCredentials([usernamePassword(
@@ -496,11 +219,9 @@ withCredentials([usernamePassword(
 )])
 ```
 
-This prevents the Docker Hub password/token from being directly written into the Jenkinsfile.
-
 ---
 
-# 📜 Jenkinsfile
+## 📜 Jenkinsfile
 
 ```groovy
 pipeline {
@@ -537,7 +258,6 @@ pipeline {
                     usernameVariable: 'DOCKER_USERNAME',
                     passwordVariable: 'DOCKER_PASSWORD'
                 )]) {
-
                     sh '''
                         echo "$DOCKER_PASSWORD" | docker login \
                         -u "$DOCKER_USERNAME" --password-stdin
@@ -561,323 +281,213 @@ pipeline {
 
 ---
 
-# 🧪 Kubernetes Verification
+## 🚦 Getting Started
 
-### Check Cluster Nodes
+### Prerequisites
+- An AWS account with an active **EKS cluster** and configured `kubectl` context
+- A **Jenkins** server with Maven, Docker, and `kubectl` installed/configured
+- A **Docker Hub** account with a Jenkins credential (`dockerhub`) set up
+- Java + Maven installed on the Jenkins agent
 
+### Steps
+
+1. **Fork / clone** this repository
+   ```bash
+   git clone https://github.com/Saf1111/maven-web-app.git
+   ```
+2. **Create a Jenkins pipeline job** pointing at this repo's `Jenkinsfile`
+3. **Add Docker Hub credentials** in Jenkins as `dockerhub` (usernamePassword type)
+4. **Update image names** in `Dockerfile`, `Jenkinsfile`, and `k8s-deploy.yml` to your own Docker Hub namespace
+5. **Trigger the pipeline** — Jenkins will build, containerize, push, and deploy automatically
+6. **Retrieve the Load Balancer URL** (see [Verification](#-verification--testing) below) and open it in your browser
+
+---
+
+## 🧪 Verification & Testing
+
+**Check cluster nodes**
 ```bash
 kubectl get nodes
 ```
-
-Expected:
-
 ```text
 NAME                             STATUS
 ip-xxx-xxx-xxx-xxx.ec2.internal  Ready
 ip-xxx-xxx-xxx-xxx.ec2.internal  Ready
 ```
 
----
-
-### Check Pods
-
+**Check pods**
 ```bash
 kubectl get pods
 ```
-
-Expected:
-
 ```text
-NAME                                    READY   STATUS
-mavenwebappdeployment-xxxxx-xxxxx       1/1     Running
-mavenwebappdeployment-xxxxx-xxxxx       1/1     Running
+NAME                                READY   STATUS
+mavenwebappdeployment-xxxxx-xxxxx   1/1     Running
+mavenwebappdeployment-xxxxx-xxxxx   1/1     Running
 ```
 
----
-
-### Check Deployment
-
+**Check deployment**
 ```bash
 kubectl get deployment
 ```
 
----
-
-### Check Service
-
+**Check service & external endpoint**
 ```bash
 kubectl get svc
 ```
-
-Expected:
-
 ```text
 NAME             TYPE           EXTERNAL-IP
 mavenwebappsvc   LoadBalancer   <AWS-LOAD-BALANCER-DNS>
 ```
 
----
-
-### Check Application Image
-
+**Confirm deployed image**
 ```bash
 kubectl get deployment mavenwebappdeployment \
--o jsonpath='{.spec.template.spec.containers[*].image}'
+  -o jsonpath='{.spec.template.spec.containers[*].image}'
 ```
-
-Expected:
-
 ```text
 safwan112/mavenwebapp:latest
 ```
 
----
+**Access the application**
 
-# 📊 Successful Pipeline
-
-The Jenkins pipeline successfully performs:
+Since the artifact is `maven-web-app.war`, Tomcat serves it at the `/maven-web-app/` context path:
 
 ```text
-✅ GitHub Repository Clone
-        ↓
-✅ Maven Build
-        ↓
-✅ WAR File Generation
-        ↓
-✅ Docker Image Build
-        ↓
-✅ Docker Hub Authentication
-        ↓
-✅ Docker Image Push
-        ↓
-✅ Kubernetes Deployment
-        ↓
-✅ EKS Pod Creation
-        ↓
-✅ LoadBalancer Creation
-        ↓
-✅ Application Deployment
-        ↓
-✅ Application Access
+http://<LOAD-BALANCER-DNS>/maven-web-app/
 ```
 
 ---
 
-# 🛠️ Troubleshooting Experience
+## 🛠️ Troubleshooting Log
 
-During deployment, the Kubernetes Pods initially reported:
+> Real issue encountered and resolved during deployment — kept here as a reference for common failure modes.
 
-```text
-ErrImagePull
-```
+**Symptom:** Pods stuck in `ErrImagePull`
 
-The issue was identified using:
-
+**Diagnosis:**
 ```bash
 kubectl describe pod <pod-name>
 ```
+revealed Kubernetes was attempting to pull an incorrect image (`vinodses/mavenwebapp`) instead of the correct one (`safwan112/mavenwebapp:latest`).
 
-The Kubernetes deployment was attempting to pull:
-
-```text
-vinodses/mavenwebapp
-```
-
-while the correct Docker image was:
-
-```text
-safwan112/mavenwebapp:latest
-```
-
-The deployment image was corrected using:
-
+**Fix:**
 ```bash
 kubectl set image deployment/mavenwebappdeployment \
-mavenwebappcontainer=safwan112/mavenwebapp:latest
+  mavenwebappcontainer=safwan112/mavenwebapp:latest
 ```
 
-After updating the image:
+**Result:** Both pods transitioned to `Running` within seconds.
 
-```text
-Pod 1 → Running
-Pod 2 → Running
-```
-
-This demonstrated practical Kubernetes troubleshooting and deployment debugging.
+| Symptom | Likely Cause | Fix |
+|---|---|---|
+| `ErrImagePull` / `ImagePullBackOff` | Wrong image name/tag, private repo without pull secret | Verify image path; add `imagePullSecrets` if private |
+| `CrashLoopBackOff` | App fails on startup | `kubectl logs <pod>` to inspect stack trace |
+| Service has no `EXTERNAL-IP` | LoadBalancer provisioning delay or missing IAM permissions | Wait, then check AWS console / IAM role |
+| Jenkins Docker push fails | Expired/incorrect credentials | Rotate token, re-check Jenkins Credential ID |
 
 ---
 
-# 📚 DevOps Concepts Demonstrated
+## 📚 DevOps Concepts Demonstrated
 
-This project provides hands-on experience with:
+<table>
+<tr>
+<td valign="top" width="33%">
 
-### Source Control
-- Git
-- GitHub
-- Repository management
+**Source Control**
+- Git fundamentals
+- GitHub repository management
+- Branching & cloning
 
-### Continuous Integration
-- Jenkins
-- Automated builds
-- Maven
+</td>
+<td valign="top" width="33%">
 
-### Containerization
-- Docker
-- Dockerfile
-- Docker images
-- Docker Hub
+**CI Automation**
+- Jenkins pipelines (declarative)
+- Automated Maven builds
+- Credential management
 
-### Container Orchestration
-- Kubernetes
-- Deployments
-- Pods
-- Services
-- Replicas
-- LoadBalancer
+</td>
+<td valign="top" width="33%">
 
-### Cloud
-- AWS EC2
-- AWS IAM
-- AWS EKS
-- AWS Load Balancer
+**Containerization**
+- Dockerfile authoring
+- Image build/tag/push
+- Docker Hub registry workflows
 
-### Linux Administration
-- Ubuntu
-- Shell commands
-- Package installation
-- Service management
+</td>
+</tr>
+<tr>
+<td valign="top" width="33%">
 
-### Troubleshooting
-- Jenkins build troubleshooting
-- Docker authentication
-- Kubernetes image pull errors
-- Pod troubleshooting
+**Orchestration**
+- Kubernetes Deployments & Pods
+- Services & LoadBalancer exposure
+- Replica management
+
+</td>
+<td valign="top" width="33%">
+
+**Cloud Infrastructure**
+- AWS EKS cluster operations
+- IAM roles for EC2
+- AWS Load Balancer provisioning
+
+</td>
+<td valign="top" width="33%">
+
+**Operations**
+- Linux/Ubuntu administration
+- Production troubleshooting
 - Deployment verification
 
----
-
-# 💡 Key Learning Outcomes
-
-Through this project, I gained practical knowledge of how a modern DevOps deployment pipeline works from source code to a running application.
-
-I learned how to:
-
-- Build Java applications using Maven
-- Manage source code using GitHub
-- Automate CI/CD using Jenkins
-- Create Docker images
-- Push container images to Docker Hub
-- Deploy applications using Kubernetes
-- Create Kubernetes Deployments and Services
-- Work with AWS EKS
-- Configure EC2 instances for DevOps tools
-- Use IAM roles for AWS authentication
-- Expose Kubernetes applications using LoadBalancer
-- Troubleshoot Kubernetes deployment issues
-- Verify application availability after deployment
+</td>
+</tr>
+</table>
 
 ---
 
-# 🚀 End-to-End Deployment Flow
+## 💡 Key Learning Outcomes
+
+Through building this pipeline end-to-end, I gained hands-on experience:
+
+- ✅ Building and packaging Java applications with Maven
+- ✅ Managing source code and collaboration through GitHub
+- ✅ Designing and running declarative Jenkins pipelines
+- ✅ Writing Dockerfiles and managing container images
+- ✅ Publishing and versioning images on Docker Hub
+- ✅ Writing Kubernetes Deployment and Service manifests
+- ✅ Operating a managed Kubernetes cluster on AWS EKS
+- ✅ Configuring IAM roles for secure, keyless AWS access
+- ✅ Exposing containerized applications via LoadBalancer services
+- ✅ Diagnosing and resolving real Kubernetes deployment failures
+
+---
+
+## ⭐ Highlights
+
+- 🔄 Fully automated, zero-touch CI/CD pipeline
+- 🐳 Immutable, portable container builds
+- ☸️ Self-healing, horizontally scalable Kubernetes deployment
+- ☁️ Production-grade managed infrastructure on AWS EKS
+- 🔐 Credential-free, IAM-based AWS authentication
+- 🛠️ Documented real-world troubleshooting and resolution
+
+---
+
+## 📌 Conclusion
+
+This project shows how independent DevOps tools — source control, CI, containerization, and orchestration — combine into a single, reliable delivery pipeline. Instead of manually building and deploying, every push to GitHub can flow automatically through Jenkins, Maven, and Docker, and land safely on a scalable Kubernetes cluster running on AWS EKS.
 
 ```text
-                    SOURCE
-                       │
-                       ▼
-                  ┌─────────┐
-                  │ GitHub  │
-                  └────┬────┘
-                       │
-                       ▼
-                  ┌─────────┐
-                  │ Jenkins │
-                  └────┬────┘
-                       │
-                       ▼
-                  ┌─────────┐
-                  │  Maven  │
-                  └────┬────┘
-                       │
-                       ▼
-                maven-web-app.war
-                       │
-                       ▼
-                  ┌─────────┐
-                  │ Docker  │
-                  └────┬────┘
-                       │
-                       ▼
-                  ┌────────────┐
-                  │ Docker Hub │
-                  └─────┬──────┘
-                        │
-                        ▼
-                   ┌─────────┐
-                   │ AWS EKS │
-                   └────┬────┘
-                        │
-                ┌───────┴────────┐
-                ▼                ▼
-             ┌───────┐       ┌───────┐
-             │ Pod 1 │       │ Pod 2 │
-             │Tomcat │       │Tomcat │
-             └───┬───┘       └───┬───┘
-                 │               │
-                 └───────┬───────┘
-                         ▼
-                 ┌──────────────┐
-                 │ LoadBalancer │
-                 └───────┬──────┘
-                         │
-                         ▼
-                     🌐 USER
+GitHub + Jenkins + Maven + Docker + Docker Hub + Kubernetes + AWS EKS + Load Balancer
+                                    =
+                    Complete End-to-End CI/CD Pipeline
 ```
 
 ---
 
-# ⭐ Project Highlights
+<div align="center">
 
-- 🔄 Automated CI/CD Pipeline
-- 🐳 Docker Containerization
-- ☸️ Kubernetes Deployment
-- ☁️ AWS EKS Infrastructure
-- 🔐 IAM-based AWS Authentication
-- 📦 Docker Hub Registry
-- ⚖️ LoadBalancer-based Application Exposure
-- 🛠️ Real-world Troubleshooting
-- 📈 Scalable Kubernetes Deployment
-- 🚀 End-to-End DevOps Implementation
+### ⭐ If this project helped you, consider giving it a star!
 
----
-
-# 📌 Conclusion
-
-This project demonstrates how DevOps tools can be integrated to create an automated application delivery pipeline.
-
-Instead of manually building and deploying the application, Jenkins automates the workflow from source code retrieval to Kubernetes deployment.
-
-The final architecture combines:
-
-```text
-GitHub
-   +
-Jenkins
-   +
-Maven
-   +
-Docker
-   +
-Docker Hub
-   +
-Kubernetes
-   +
-AWS EKS
-   +
-LoadBalancer
-```
-
-resulting in a complete **End-to-End CI/CD deployment pipeline**.
-
----
-
-## ⭐ If you found this project useful, consider giving the repository a star!
+</div>
